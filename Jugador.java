@@ -12,14 +12,14 @@ public class Jugador {
         this.puntaje = 0;
     }
 
-    public void sumarPunto() {
-        puntaje++;
+    public void sumarPuntos(int puntos) {
+       puntaje += puntos;
     }
 
     public int getPuntaje() {
         return puntaje;
     }
-
+    
     public String getNombre() {
         return nombre;
     }
