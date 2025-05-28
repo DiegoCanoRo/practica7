@@ -1,4 +1,4 @@
-package comdiegocano.memorama;
+package practica7;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -301,8 +301,9 @@ public class Interfaz extends javax.swing.JDialog {
             JLabel label = labels[i];
 
             String archivoImagen = tarjeta.estaDescubierta() ? tarjeta.getId() + ".png" : "volteada.png";
-            String ruta = "C:/Users/diego/Documents/NetBeansProjects/Memorama/src/main/java/comdiegocano/memorama/Memorama/" + tipo + "/" + archivoImagen;
-
+           // String ruta = "C:/Users/diego/Documents/NetBeansProjects/Memorama/src/main/java/comdiegocano/memorama/Memorama/" + tipo + "/" + archivoImagen;
+           //C:\Users\llesl\Documents\NetBeansProjects\practica7\src 
+           String ruta = "C:\\Users\\llesl\\Documents\\NetBeansProjects\\practica7\\src\\practica7\\memorama\\" + tipo + "\\" + archivoImagen;
             ImageIcon iconoOriginal = new ImageIcon(ruta);
 
             if (iconoOriginal.getIconWidth() != -1) {
