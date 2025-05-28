@@ -11,6 +11,7 @@ public class Memorama {
     private Tarjeta segundaSeleccionada;
     private String tipoDeTarjeta;
 
+    //guardará el tipo de tarjeta que se usara (fruta, emoji o animal)
     public void seleccionarTipoTarjeta(String tipo) {
         this.tipoDeTarjeta = tipo;
     }
@@ -18,7 +19,7 @@ public class Memorama {
     public String getTipo() {
         return tipoDeTarjeta;
     }
-
+    //se crean los jugadores, genera las tarjetas y se reinicia el turno actual
     public void iniciarJuego(int numeroJugadores) {
         jugadores = new ArrayList<>();
         for (int i = 1; i <= numeroJugadores; i++) {
@@ -28,7 +29,7 @@ public class Memorama {
         barajarTarjetas();
         turnoActual = 0;
     }
-
+    //crea pares de las tarjetas
     public ArrayList<Tarjeta> generarTarjetas() {
         ArrayList<Tarjeta> lista = new ArrayList<>();
         String[] ids;
@@ -68,7 +69,7 @@ public class Memorama {
                 throw new IllegalArgumentException("Tipo de tarjeta inválido");
         }
     }
-
+    //mezcla las tarjetas
     public void barajarTarjetas() {
         Collections.shuffle(tarjetas);
     }
@@ -95,7 +96,9 @@ public class Memorama {
     public boolean puedeSeleccionar() {
         return segundaSeleccionada == null;
     }
-
+    //compara si son iguales las tarjetas seleccionadas
+    //si son iguales se asignan puntos y el turno no cambia y si son
+    //distintas se voltean y pasa el turno
     public boolean evaluarSeleccion() {
         if (primeraSeleccionada != null && segundaSeleccionada != null) {
             boolean acerto = primeraSeleccionada.getId().equals(segundaSeleccionada.getId());
@@ -184,7 +187,6 @@ public class Memorama {
         return turnoActual;
     }
 
-    //
 //    public int[] obtenerPuntajes() {
 //        int[] puntos = new int[jugadores.size()];
 //        for (int i = 0; i < jugadores.size(); i++) {
@@ -216,5 +218,4 @@ public class Memorama {
         }
         return sb.toString();
     }
-
 }
