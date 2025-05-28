@@ -2,9 +2,10 @@ package comdiegocano.memorama;
 
 public class TarjetaAnimal extends Tarjeta {
     
-    
-    public TarjetaAnimal(String id, int cuantoVale) {
-        super(id, cuantoVale);
+    //animales vale 
+    public TarjetaAnimal(String id) {
+        super(id, 1, "Punto extra");
+        
     }
     
     @Override
@@ -12,8 +13,5 @@ public class TarjetaAnimal extends Tarjeta {
         return "Animal";
     }
     
-    @Override
-    public void comportamientoRacha(){
-        comportamiento = "Punto extra";
-    }
+    
 }

@@ -3,8 +3,8 @@ package comdiegocano.memorama;
 public class TarjetaEmoji extends Tarjeta {
 
 
-    public TarjetaEmoji(String id, int cuantoVale) {
-        super(id, cuantoVale);
+    public TarjetaEmoji(String id) {
+        super(id, 2, "Restar");
     }
 
     @Override
@@ -12,8 +12,5 @@ public class TarjetaEmoji extends Tarjeta {
         return "Emoji";
     }
 
-    @Override
-    public void comportamientoRacha(){
-        comportamiento = "Restar";
-    }
+  
 }

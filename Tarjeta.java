@@ -7,13 +7,13 @@ public abstract class Tarjeta {
     protected int cuantoVale;
     protected String comportamiento;
     
-    public Tarjeta(String id, int cuantoVale){
+    public Tarjeta(String id, int cuantoVale, String comportamiento){
         this.id = id;
         descubierta = false;
         this.cuantoVale = cuantoVale;
+        this.comportamiento = comportamiento;
     }
     
-    public abstract void comportamientoRacha();
     public abstract String getTipo();
     
     public String getId(){
