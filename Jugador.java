@@ -1,6 +1,6 @@
 
-package practica7;
-
+package comdiegocano.memorama;
+//package practica7;
 
 public class Jugador {
    

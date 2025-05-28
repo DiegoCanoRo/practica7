@@ -1,4 +1,5 @@
 package comdiegocano.memorama;
+//package practica7;
 
 public class TarjetaEmoji extends Tarjeta {
 

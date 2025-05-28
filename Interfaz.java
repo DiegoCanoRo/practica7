@@ -1,4 +1,5 @@
-package practica7;
+package comdiegocano.memorama;
+//package practica7;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -15,25 +17,25 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.border.Border;
 
-
 public class Interfaz extends javax.swing.JDialog {
 
     private Memorama juego;
     private boolean esperando = false;
 
-    
     public Interfaz(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-       getContentPane().setBackground(new Color(105,150,150));
-       initComponents();
+        getContentPane().setBackground(new Color(105, 150, 150));
+        initComponents();
         setTitle("Memorama");
+        racha.setText("");
         Border border = BorderFactory.createLineBorder(Color.BLACK);
         titulo.setFont(new Font("Serif", Font.BOLD, 19));
-        
+        racha.setFont(new Font("Serif", Font.BOLD, 14));
+        turno.setFont(new Font("Serif", Font.BOLD, 14));
+        puntajeLabel.setFont(new Font("Serif", Font.BOLD, 14));
         getContentPane().setLayout(null);
 
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -56,12 +58,12 @@ public class Interfaz extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        turnoActual = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
+        puntajeLabel = new javax.swing.JLabel();
+        turno = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         puntaje = new javax.swing.JTextArea();
         titulo = new javax.swing.JLabel();
+        racha = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -72,15 +74,9 @@ public class Interfaz extends javax.swing.JDialog {
             }
         });
 
-        jLabel17.setText("Puntaje");
+        puntajeLabel.setText("Puntaje");
 
-        turnoActual.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                turnoActualActionPerformed(evt);
-            }
-        });
-
-        jLabel18.setText("Turno actual");
+        turno.setText("Turno actual");
 
         puntaje.setColumns(20);
         puntaje.setRows(5);
@@ -88,10 +84,16 @@ public class Interfaz extends javax.swing.JDialog {
 
         titulo.setText("Memorama");
 
+        racha.setText("jLabel17");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(401, 401, 401)
+                .addComponent(iniciarJuego)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(90, 90, 90)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -104,7 +106,7 @@ public class Interfaz extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(179, 179, 179)
                         .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -125,75 +127,70 @@ public class Interfaz extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(74, 74, 74)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel18)
-                                    .addComponent(turnoActual, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel17)))))
                             .addComponent(jLabel16)
-                            .addComponent(jLabel8))
-                        .addContainerGap(26, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addGap(74, 74, 74)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(turno, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(puntajeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(44, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel12)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(401, 401, 401)
-                .addComponent(iniciarJuego)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(370, 370, 370))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(racha, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(titulo)
-                .addGap(72, 72, 72)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(racha)
+                .addGap(50, 50, 50)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
                         .addGap(124, 124, 124)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 252, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12))
-                        .addGap(145, 145, 145)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel14)
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel16))
-                        .addGap(50, 50, 50)
-                        .addComponent(iniciarJuego)
-                        .addGap(38, 38, 38))
+                            .addComponent(jLabel8)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel18)
+                        .addGap(44, 44, 44)
+                        .addComponent(turno)
+                        .addGap(41, 41, 41)
+                        .addComponent(puntajeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(turnoActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel17)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12))
+                .addGap(145, 145, 145)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel16))
+                .addGap(50, 50, 50)
+                .addComponent(iniciarJuego)
+                .addGap(38, 38, 38))
         );
 
         pack();
@@ -225,7 +222,7 @@ public class Interfaz extends javax.swing.JDialog {
 
         // Crear el objeto del juego
         juego = new Memorama();
-
+        juego.setInterfaz(this);
         // Pedir tipo de tarjetas
         String[] opciones = {"Animales", "Frutas", "Emojis"};
         String tipo = (String) JOptionPane.showInputDialog(
@@ -242,14 +239,12 @@ public class Interfaz extends javax.swing.JDialog {
             return; // Cancelar
         }
         juego.seleccionarTipoTarjeta(tipo);
-        juego.iniciarJuego(jugadores);      
+
+        juego.iniciarJuego(jugadores);
+
         actualizarImagenesTablero();
     }//GEN-LAST:event_iniciarJuegoActionPerformed
 
-    private void turnoActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_turnoActualActionPerformed
-      
-    }//GEN-LAST:event_turnoActualActionPerformed
-//Con este método se van ir actualizando las imágenes en la interfaz gráfica del juego
     private void actualizarImagenesTablero() {
         // Tamaño de cada imagen
         int imagenAncho = 105;
@@ -301,10 +296,8 @@ public class Interfaz extends javax.swing.JDialog {
             JLabel label = labels[i];
 
             String archivoImagen = tarjeta.estaDescubierta() ? tarjeta.getId() + ".png" : "volteada.png";
-           //Ruta de diego:
-           // String ruta = "C:/Users/diego/Documents/NetBeansProjects/Memorama/src/main/java/comdiegocano/memorama/Memorama/" + tipo + "/" + archivoImagen;
-           //Se le da el acceso a la ruta de la carpeta donde estan ubicadas las imágenes del memorama
-           String ruta = "C:\\Users\\llesl\\Documents\\NetBeansProjects\\practica7\\src\\practica7\\memorama\\" + tipo + "\\" + archivoImagen;
+            String ruta = "C:/Users/diego/Documents/NetBeansProjects/Memorama/src/main/java/comdiegocano/memorama/Memorama/" + tipo + "/" + archivoImagen;
+
             ImageIcon iconoOriginal = new ImageIcon(ruta);
 
             if (iconoOriginal.getIconWidth() != -1) {
@@ -312,10 +305,12 @@ public class Interfaz extends javax.swing.JDialog {
                 label.setIcon(new ImageIcon(imagenRedimensionada));
             } else {
                 System.out.println("No se encontró la imagen: " + ruta);
+
             }
         }
+
     }
-//este método es para cuando el jugador seleccione la tarjeta
+
     private void manejarClicEnTarjeta(int indice) {
         if (esperando) {
             return;
@@ -336,19 +331,21 @@ public class Interfaz extends javax.swing.JDialog {
             Timer timer = new Timer(1000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    boolean acerto = juego.evaluarSeleccion(); 
+                    boolean acerto = juego.evaluarSeleccion();
                     //se actualiza el tablero para mostrar resultados
                     actualizarImagenesTablero();
                     actualizarInterfaz();
                     esperando = false;
                     //si el juego ha terminado le muestra un mensaje al jugador ganador
+
                     if (juego.juegoTerminado()) {
                         String ganador = juego.obtenerGanador();
                         actualizarInterfaz();
                         JOptionPane.showMessageDialog(null, "¡Fin del juego! Ganó " + ganador);
-                    //si no acerto solo se actualiza la interfaz
+                        //si no acerto solo se actualiza la interfaz
+
                     } else if (!acerto) {
-                      actualizarInterfaz();
+                        actualizarInterfaz();
                     }
                 }
             });
@@ -359,13 +356,15 @@ public class Interfaz extends javax.swing.JDialog {
             timer.start();
         }
     }
-    
+
     //como lo dice el método es para actualizar la interfaz con ello se
     //actualiza el turno del jugador actual y los puntajes
-    public void actualizarInterfaz(){
-        turnoActual.setText("" + juego.obtenerJugadorActualTexto());
-        puntaje.setText(""+ juego.obtenerPuntajesTexto());
+    public void actualizarInterfaz() {
+        turno.setText("Turno actual: " + juego.obtenerJugadorActualTexto());
+        puntaje.setText("" + juego.obtenerPuntajesTexto());
+        racha.setText("" + juego.toStringRacha());
     }
+
     /**
      * @param args the command line arguments
      */
@@ -418,8 +417,6 @@ public class Interfaz extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -430,7 +427,9 @@ public class Interfaz extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea puntaje;
+    private javax.swing.JLabel puntajeLabel;
+    private javax.swing.JLabel racha;
     private javax.swing.JLabel titulo;
-    private javax.swing.JTextField turnoActual;
+    private javax.swing.JLabel turno;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,4 +1,5 @@
-package practica7;
+package comdiegocano.memorama;
+//package practica7;
 
 import java.util.*;
 
@@ -10,15 +11,21 @@ public class Memorama {
     private Tarjeta primeraSeleccionada;
     private Tarjeta segundaSeleccionada;
     private String tipoDeTarjeta;
+    private int racha;
+    private Interfaz interfaz;
 
-    //guardará el tipo de tarjeta que se usara (fruta, emoji o animal)
     public void seleccionarTipoTarjeta(String tipo) {
         this.tipoDeTarjeta = tipo;
+    }
+
+    public void setInterfaz(Interfaz interfaz) {
+        this.interfaz = interfaz;
     }
 
     public String getTipo() {
         return tipoDeTarjeta;
     }
+
     //se crean los jugadores, genera las tarjetas y se reinicia el turno actual
     public void iniciarJuego(int numeroJugadores) {
         jugadores = new ArrayList<>();
@@ -29,7 +36,8 @@ public class Memorama {
         barajarTarjetas();
         turnoActual = 0;
     }
-    //crea pares de las tarjetas
+
+    //guardará el tipo de tarjeta que se usara (fruta, emoji o animal)
     public ArrayList<Tarjeta> generarTarjetas() {
         ArrayList<Tarjeta> lista = new ArrayList<>();
         String[] ids;
@@ -60,15 +68,16 @@ public class Memorama {
     public Tarjeta crearTarjeta(String id) {
         switch (tipoDeTarjeta) {
             case "Emojis":
-                return new TarjetaEmoji(id, 1);
+                return new TarjetaEmoji(id);
             case "Animales":
-                return new TarjetaAnimal(id, 2);
-            case "Frutas": 
-                return new TarjetaFruta(id, 3);
+                return new TarjetaAnimal(id);
+            case "Frutas":
+                return new TarjetaFruta(id);
             default:
                 throw new IllegalArgumentException("Tipo de tarjeta inválido");
         }
     }
+
     //mezcla las tarjetas
     public void barajarTarjetas() {
         Collections.shuffle(tarjetas);
@@ -96,31 +105,44 @@ public class Memorama {
     public boolean puedeSeleccionar() {
         return segundaSeleccionada == null;
     }
+
     //compara si son iguales las tarjetas seleccionadas
     //si son iguales se asignan puntos y el turno no cambia y si son
     //distintas se voltean y pasa el turno
+    //tambien maneja el comportamiento de racha, 
     public boolean evaluarSeleccion() {
         if (primeraSeleccionada != null && segundaSeleccionada != null) {
             boolean acerto = primeraSeleccionada.getId().equals(segundaSeleccionada.getId());
 
             if (!acerto) {
+                racha = 0;
                 primeraSeleccionada.voltearTarjeta();
                 segundaSeleccionada.voltearTarjeta();
                 siguienteTurno(); // si falla, cambia turno
+                interfaz.actualizarInterfaz();
+
             } else {
-                asignarPuntoAJugadorActual(); // si acierta, gana punto y mantiene turno
+                manejarPorComportamiento();
+                racha++;
+                interfaz.actualizarInterfaz();
+
             }
 
             primeraSeleccionada = null;
             segundaSeleccionada = null;
+            interfaz.actualizarInterfaz();
 
             return acerto;
         }
+        interfaz.actualizarInterfaz();
+
         return false;
     }
 
     public boolean verificarEmparejamiento(Tarjeta t1, Tarjeta t2) {
         if (t1.esIgual(t2)) {
+            interfaz.actualizarInterfaz();
+
             return true;
         } else {
             t1.voltearTarjeta();
@@ -129,9 +151,67 @@ public class Memorama {
         }
     }
 
-    //le suma un punto al jugador con turno
-    public void asignarPuntoAJugadorActual() {
-        jugadores.get(turnoActual).sumarPuntos(primeraSeleccionada.getCuantoVale());
+    //maneja el comportamiento cuando un jugador tiene racha
+    public void manejarPorComportamiento() {
+        if (racha >= 1) {
+            String comportamiento = primeraSeleccionada.getComportamiento();
+            //cuando esta en racha obtiene un punto extra
+            switch (comportamiento) {
+                case "Punto extra":
+                    jugadores.get(turnoActual).sumarPuntos(primeraSeleccionada.getCuantoVale());
+                    jugadores.get(turnoActual).sumarPuntos(1);
+                    interfaz.actualizarInterfaz();
+
+                    break;
+                //cuando esta en racha le resta a los demas jugadores
+                case "Restar":
+                    jugadores.get(turnoActual).sumarPuntos(primeraSeleccionada.getCuantoVale());
+
+                    for (Jugador jugador : jugadores) {
+                        if (jugador.equals(jugadores.get(turnoActual))) {
+                            jugador.sumarPuntos(0);
+                        } else {
+                            jugador.sumarPuntos(-1);
+                        }
+                    }
+                    interfaz.actualizarInterfaz();
+
+                    break;
+                //cuando esta en racha le roba puntos al jugador con mas puntos
+                //si el jugador en racha es el que tiene mas puntos no se le resta
+                case "Robar punto":
+                    int masPuntos = 0;
+                    for (Jugador jugador : jugadores) {
+                        if (jugador.getPuntaje() > masPuntos) {
+                            masPuntos = jugador.getPuntaje();
+                        }
+                    }
+
+                    boolean pudoRobar = false;
+
+                    for (Jugador jugador : jugadores) {
+                        if (jugador.getPuntaje() == masPuntos && !jugador.equals(jugadores.get(turnoActual))) {
+                            jugador.sumarPuntos(-1);
+                            pudoRobar = true;
+                            break; // solo le roba a uno
+                        }
+                    }
+
+                    if (pudoRobar) {
+                        jugadores.get(turnoActual).sumarPuntos(primeraSeleccionada.getCuantoVale() + 1);
+                    } else {
+                        jugadores.get(turnoActual).sumarPuntos(primeraSeleccionada.getCuantoVale());
+                    }
+
+                    interfaz.actualizarInterfaz();
+                    break;
+
+            }
+        } else {
+            jugadores.get(turnoActual).sumarPuntos(primeraSeleccionada.getCuantoVale());
+            interfaz.actualizarInterfaz();
+        }
+
     }
 
     public void siguienteTurno() {
@@ -148,36 +228,37 @@ public class Memorama {
         return true;
     }
 
-   public String obtenerGanador() {
-    int maxPuntaje = Integer.MIN_VALUE;
-    List<Jugador> empatados = new ArrayList<>();
+    //se determina el ganador basado en quien tiene mas puntos
+    public String obtenerGanador() {
+        int maxPuntaje = Integer.MIN_VALUE;
+        List<Jugador> empatados = new ArrayList<>();
 
-    for (Jugador j : jugadores) {
-        if (j.getPuntaje() > maxPuntaje) {
-            maxPuntaje = j.getPuntaje();
-            empatados.clear();
-            empatados.add(j);
-        } else if (j.getPuntaje() == maxPuntaje) {
-            empatados.add(j);
-        }
-    }
-
-    if (empatados.size() == 1) {
-        return empatados.get(0).getNombre() + " con " + maxPuntaje + " puntos";
-    } else {
-        StringBuilder resultado = new StringBuilder("Empate entre: ");
-        for (int i = 0; i < empatados.size(); i++) {
-            resultado.append(empatados.get(i).getNombre());
-            if (i < empatados.size() - 2) {
-                resultado.append(", ");
-            } else if (i == empatados.size() - 2) {
-                resultado.append(" y ");
+        for (Jugador j : jugadores) {
+            if (j.getPuntaje() > maxPuntaje) {
+                maxPuntaje = j.getPuntaje();
+                empatados.clear();
+                empatados.add(j);
+            } else if (j.getPuntaje() == maxPuntaje) {
+                empatados.add(j);
             }
         }
-        resultado.append(" con ").append(maxPuntaje).append(" puntos");
-        return resultado.toString();
+
+        if (empatados.size() == 1) {
+            return empatados.get(0).getNombre() + " con " + maxPuntaje + " puntos";
+        } else {
+            StringBuilder resultado = new StringBuilder("Empate entre: ");
+            for (int i = 0; i < empatados.size(); i++) {
+                resultado.append(empatados.get(i).getNombre());
+                if (i < empatados.size() - 2) {
+                    resultado.append(", ");
+                } else if (i == empatados.size() - 2) {
+                    resultado.append(" y ");
+                }
+            }
+            resultado.append(" con ").append(maxPuntaje).append(" puntos");
+            return resultado.toString();
+        }
     }
-}
 
     public ArrayList<Tarjeta> obtenerTablero() {
         return tarjetas;
@@ -187,15 +268,6 @@ public class Memorama {
         return turnoActual;
     }
 
-//    public int[] obtenerPuntajes() {
-//        int[] puntos = new int[jugadores.size()];
-//        for (int i = 0; i < jugadores.size(); i++) {
-//            puntos[i] = jugadores.get(i).getPuntaje();
-//        }
-//        return puntos;
-//    }
-    
-    
     public Tarjeta getPrimeraSeleccionada() {
         return primeraSeleccionada;
     }
@@ -218,4 +290,22 @@ public class Memorama {
         }
         return sb.toString();
     }
+
+    public String toStringRacha() {
+        if (racha >= 1) {
+            switch (tipoDeTarjeta) {
+                case "Animales":
+                    return "¡Estás en racha! Obtendrás un punto adicional por cada acierto.";
+                case "Frutas":
+                    return "¡Estás en racha! Robarás un punto al jugador con más puntos.";
+                case "Emojis":
+                    return "¡Estás en racha! Harás que los demás jugadores pierdan un punto.";
+                default:
+                    return "¡Estás en racha!aaaaaaaaaaaaaaaaaaaaa";
+            }
+        } else {
+            return "";
+        }
+    }
+
 }

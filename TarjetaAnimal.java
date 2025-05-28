@@ -1,5 +1,5 @@
 package comdiegocano.memorama;
-
+//package practica7;
 public class TarjetaAnimal extends Tarjeta {
     
     //animales vale 
