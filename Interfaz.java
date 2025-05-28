@@ -247,9 +247,9 @@ public class Interfaz extends javax.swing.JDialog {
     }//GEN-LAST:event_iniciarJuegoActionPerformed
 
     private void turnoActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_turnoActualActionPerformed
-        // TODO add your handling code here:
+      
     }//GEN-LAST:event_turnoActualActionPerformed
-
+//Con este método se van ir actualizando las imágenes en la interfaz gráfica del juego
     private void actualizarImagenesTablero() {
         // Tamaño de cada imagen
         int imagenAncho = 105;
@@ -301,8 +301,9 @@ public class Interfaz extends javax.swing.JDialog {
             JLabel label = labels[i];
 
             String archivoImagen = tarjeta.estaDescubierta() ? tarjeta.getId() + ".png" : "volteada.png";
+           //Ruta de diego:
            // String ruta = "C:/Users/diego/Documents/NetBeansProjects/Memorama/src/main/java/comdiegocano/memorama/Memorama/" + tipo + "/" + archivoImagen;
-           //C:\Users\llesl\Documents\NetBeansProjects\practica7\src 
+           //Se le da el acceso a la ruta de la carpeta donde estan ubicadas las imágenes del memorama
            String ruta = "C:\\Users\\llesl\\Documents\\NetBeansProjects\\practica7\\src\\practica7\\memorama\\" + tipo + "\\" + archivoImagen;
             ImageIcon iconoOriginal = new ImageIcon(ruta);
 
@@ -311,12 +312,10 @@ public class Interfaz extends javax.swing.JDialog {
                 label.setIcon(new ImageIcon(imagenRedimensionada));
             } else {
                 System.out.println("No se encontró la imagen: " + ruta);
-
             }
         }
-
     }
-
+//este método es para cuando el jugador seleccione la tarjeta
     private void manejarClicEnTarjeta(int indice) {
         if (esperando) {
             return;
@@ -328,7 +327,9 @@ public class Interfaz extends javax.swing.JDialog {
         }
 
         actualizarImagenesTablero();
-
+        //si el jugador selecciona dos tarjetas entra en la condicion para
+        //asegurarse si es par, se crea el timer que espera 1 segundo antes
+        //de verificar si ambas tarjetas coinciden
         if (juego.getPrimeraSeleccionada() != null && juego.getSegundaSeleccionada() != null) {
             esperando = true;
 
@@ -336,28 +337,31 @@ public class Interfaz extends javax.swing.JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     boolean acerto = juego.evaluarSeleccion(); 
+                    //se actualiza el tablero para mostrar resultados
                     actualizarImagenesTablero();
                     actualizarInterfaz();
                     esperando = false;
-                    
+                    //si el juego ha terminado le muestra un mensaje al jugador ganador
                     if (juego.juegoTerminado()) {
                         String ganador = juego.obtenerGanador();
                         actualizarInterfaz();
                         JOptionPane.showMessageDialog(null, "¡Fin del juego! Ganó " + ganador);
+                    //si no acerto solo se actualiza la interfaz
                     } else if (!acerto) {
                       actualizarInterfaz();
                     }
                 }
             });
+            //el timer se ejecuta una sola vez, seguido se actualiza la interfaz
+            //y lo inicia
             timer.setRepeats(false);
             actualizarInterfaz();
             timer.start();
         }
     }
-
     
-    
-    
+    //como lo dice el método es para actualizar la interfaz con ello se
+    //actualiza el turno del jugador actual y los puntajes
     public void actualizarInterfaz(){
         turnoActual.setText("" + juego.obtenerJugadorActualTexto());
         puntaje.setText(""+ juego.obtenerPuntajesTexto());
