@@ -1,4 +1,4 @@
-package comdiegocano.memorama;
+package practica7;
 
 import java.util.*;
 
